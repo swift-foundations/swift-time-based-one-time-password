@@ -1,0 +1,9 @@
+# .github/metadata.yaml
+description: "TOTP and HOTP one-time password generation per RFC 6238 and RFC 4226 for Swift."
+topics:
+  - foundations
+  - totp
+  - authentication
+homepage: "https://swift-institute.org"
+readme:
+  family: E
