@@ -1,6 +1,6 @@
 # swift-one-time-password
 
-[![CI](https://github.com/coenttb/swift-one-time-password/workflows/CI/badge.svg)](https://github.com/coenttb/swift-one-time-password/actions/workflows/ci.yml)
+[![CI](https://github.com/swift-foundations/swift-time-based-one-time-password/workflows/CI/badge.svg)](https://github.com/swift-foundations/swift-time-based-one-time-password/actions/workflows/ci.yml)
 ![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
 
 Swift implementation of One-Time Password algorithms (TOTP and HOTP) based on [RFC 6238](https://www.rfc-editor.org/rfc/rfc6238.html) and [RFC 4226](https://www.rfc-editor.org/rfc/rfc4226.html).
@@ -27,7 +27,7 @@ Add this package to your Swift project:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/coenttb/swift-one-time-password.git", from: "0.0.1")
+    .package(url: "https://github.com/swift-foundations/swift-time-based-one-time-password.git", from: "0.0.1")
 ]
 ```
 
