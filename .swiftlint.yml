@@ -1,13 +1,11 @@
-disabled_rules:
-  - line_length
-  - function_body_length
-  - type_body_length
-  - file_length
-opt_in_rules:
-  - explicit_init
-  - explicit_type_interface
-included:
-  - Sources
-  - Tests
-excluded:
-  - .build
+# SwiftLint configuration for swift-time-based-one-time-password
+# Inherits from the shared parent configuration in swift-foundations
+# (which chains to the swift-institute Tier 1 ecosystem-wide canonical).
+#
+# The Tier 1 parent already disables line_length / function_body_length /
+# type_body_length / file_length and opts in explicit_init, so no
+# package-specific overrides are needed. The previous standalone config's
+# explicit_type_interface opt-in (219 false positives) is intentionally
+# dropped by moving to the inherited chain.
+
+parent_config: https://raw.githubusercontent.com/swift-foundations/.github/main/.swiftlint.yml
