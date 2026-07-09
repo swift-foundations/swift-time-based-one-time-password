@@ -24,7 +24,7 @@ extension TOTP {
 
   /// The secret key as a base32 encoded string
   public var base32Secret: String {
-    secret.base32EncodedString()
+    RFC_6238.Base32.encode(secret)
   }
 
   /// Generates an OTP for the current time using swift-crypto
@@ -38,7 +38,7 @@ extension TOTP {
   /// - Parameter time: The time to generate OTP for
   /// - Returns: The generated OTP as a string with leading zeros if necessary
   public func generate(at time: Date) -> String {
-    generate(at: time, using: CryptoHMACProvider())
+    generate(at: time.timeIntervalSince1970, using: CryptoHMACProvider())
   }
 
   /// Validates an OTP at the current time using swift-crypto
@@ -58,7 +58,21 @@ extension TOTP {
   ///   - window: The number of time steps to check before and after the time (default: 1)
   /// - Returns: True if the OTP is valid within the window
   public func validate(_ otp: String, at time: Date, window: Int = 1) -> Bool {
-    validate(otp, at: time, window: window, using: CryptoHMACProvider())
+    validate(otp, at: time.timeIntervalSince1970, window: window, using: CryptoHMACProvider())
+  }
+
+  /// Seconds remaining until the next OTP at the current time.
+  /// - Returns: Seconds remaining until the next OTP rolls over
+  public func timeRemaining() -> TimeInterval {
+    @Dependency(\.date) var date
+    return timeRemaining(at: date().timeIntervalSince1970)
+  }
+
+  /// Seconds remaining until the next OTP at a specific time.
+  /// - Parameter time: The time to measure from
+  /// - Returns: Seconds remaining until the next OTP rolls over
+  public func timeRemaining(at time: Date) -> TimeInterval {
+    timeRemaining(at: time.timeIntervalSince1970)
   }
 
   /// Generates multiple OTPs for display (current and next)
@@ -72,7 +86,7 @@ extension TOTP {
     for i in 0..<count {
       let time = Date(timeIntervalSince1970: now.timeIntervalSince1970 + Double(i) * timeStep)
       let otp = generate(at: time)
-      let remaining = timeRemaining(at: time)
+      let remaining = timeRemaining(at: time.timeIntervalSince1970)
       results.append((otp, remaining))
     }
 

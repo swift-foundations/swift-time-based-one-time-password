@@ -23,26 +23,25 @@ extension HOTP {
   ///   - algorithm: The HMAC algorithm (default: SHA1)
   /// - Throws: `Error.invalidBase32String` if base32 decoding fails, or other validation errors
   public init(base32Secret: String, digits: Int = 6, algorithm: RFC_6238.Algorithm = .sha1) throws {
-    guard let secret = Data(base32Encoded: base32Secret) else {
+    guard let secret = RFC_6238.Base32.decode(base32Secret) else {
       throw RFC_6238.Error.invalidBase32String
     }
     try self.init(secret: secret, digits: digits, algorithm: algorithm)
   }
 
-  /// Generates an OTP for a given counter using swift-crypto
-  /// - Parameter counter: The counter value
-  /// - Returns: The generated OTP as a string with leading zeros if necessary
-  public func generate(counter: UInt64) -> String {
-    generate(counter: counter, using: CryptoHMACProvider())
-  }
-
-  /// Validates an OTP for a given counter
+  /// Validates an OTP for a given counter, using the batteries-included
+  /// swift-crypto HMAC provider.
+  ///
+  /// The bare `generate(counter:)` convenience now lives upstream in
+  /// `RFC_6238` (dependency-resolved); this package routes its own crypto-backed
+  /// generation explicitly through ``CryptoHMACProvider`` to keep determinism
+  /// without requiring a registered dependency scope.
   /// - Parameters:
   ///   - otp: The OTP to validate
   ///   - counter: The counter value to validate against
   /// - Returns: True if the OTP is valid for the counter
   public func validate(_ otp: String, counter: UInt64) -> Bool {
-    let expected = generate(counter: counter)
+    let expected = generate(counter: counter, using: CryptoHMACProvider())
     return constantTimeCompare(otp, expected)
   }
 }

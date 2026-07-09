@@ -46,8 +46,8 @@ extension TOTP {
   /// - Returns: Base32 encoded secret string
   public static func generateSecret(length: Int = 20) -> String {
     let key = SymmetricKey(size: .init(bitCount: length * 8))
-    let bytes = key.withUnsafeBytes { Data($0) }
-    return bytes.base32EncodedString()
+    let bytes = key.withUnsafeBytes { Array($0) }
+    return RFC_6238.Base32.encode(bytes)
   }
 
   /// Creates a TOTP instance with a newly generated secure secret
@@ -73,7 +73,7 @@ extension TOTP {
     }
 
     let key = SymmetricKey(size: .init(bitCount: keyLength * 8))
-    let keyData = key.withUnsafeBytes { Data($0) }
+    let keyData = key.withUnsafeBytes { Array($0) }
 
     return try TOTP(
       secret: keyData,
@@ -96,7 +96,7 @@ extension TOTP {
     digits: Int = 6,
     timeStep: TimeInterval = 30
   ) throws {
-    let keyData = symmetricKey.withUnsafeBytes { Data($0) }
+    let keyData = symmetricKey.withUnsafeBytes { Array($0) }
     try self.init(
       secret: keyData,
       timeStep: timeStep,

@@ -1,4 +1,4 @@
-// swift-tools-version:6.0
+// swift-tools-version: 6.3.1
 
 import Foundation
 import PackageDescription
@@ -19,14 +19,14 @@ extension Target.Dependency {
     static var crypto: Self { .product(name: "Crypto", package: "swift-crypto") }
     static var dependencies: Self { .product(name: "Dependencies", package: "swift-dependencies") }
     static var dependenciesTestSupport: Self { .product(name: "DependenciesTestSupport", package: "swift-dependencies") }
-    static var rfc6238: Self { .product(name: "RFC_6238", package: "swift-rfc-6238") }
+    static var rfc6238: Self { .product(name: "RFC 6238", package: "swift-rfc-6238") }
 }
 
 let package = Package(
     name: "swift-one-time-password",
     platforms: [
-        .macOS(.v13),
-        .iOS(.v16)
+        .macOS(.v26),
+        .iOS(.v26)
     ],
     products: [
         .library(name: .totp, targets: [.totp]),
@@ -35,7 +35,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-crypto", from: "4.1.0"),
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.9.2"),
-        .package(url: "https://github.com/swift-web-standards/swift-rfc-6238.git", from: "0.0.1")
+        .package(url: "https://github.com/swift-ietf/swift-rfc-6238.git", branch: "main")
     ],
     targets: [
         .target(

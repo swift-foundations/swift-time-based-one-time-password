@@ -56,7 +56,7 @@ extension TOTP {
   /// - Returns: Migration parameters
   public func exportMigration(issuer: String, accountName: String) -> MigrationParameters {
     MigrationParameters(
-      secret: secret.base32EncodedString(),
+      secret: RFC_6238.Base32.encode(secret),
       issuer: issuer,
       accountName: accountName,
       algorithm: algorithm,
