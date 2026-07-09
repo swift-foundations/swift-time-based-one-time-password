@@ -16,15 +16,14 @@ import Testing
 @testable import TOTP
 
 @Suite(
-  "README Verification",
   .dependency(\.date, .init { Date() })
 )
-struct ReadmeVerificationTests {
+struct `README Verification` {
 
   // MARK: - TOTP Examples from README
 
-  @Test("README Example - Basic TOTP Generation (lines 50-71)")
-  func readmeExampleBasicTOTPGeneration() throws {
+  @Test
+  func `README Example - Basic TOTP Generation (lines 50-71)`() throws {
     // From README lines 50-71
     // Create TOTP from base32 secret (most common format)
     let totp = try TOTP.sha1(base32Secret: "JBSWY3DPEHPK3PXP")
@@ -49,8 +48,8 @@ struct ReadmeVerificationTests {
     #expect(remaining <= 30)
   }
 
-  @Test("README Example - Generate Secure Secrets (lines 73-86)")
-  func readmeExampleGenerateSecrets() throws {
+  @Test
+  func `README Example - Generate Secure Secrets (lines 73-86)`() throws {
     // From README lines 73-86
     // Generate a random base32 secret
     let secret = TOTP.generateSecret()  // Default 20 bytes for SHA1
@@ -66,8 +65,8 @@ struct ReadmeVerificationTests {
     #expect(!base32Secret.isEmpty)
   }
 
-  @Test("README Example - Different Hash Algorithms (lines 88-99)")
-  func readmeExampleDifferentAlgorithms() throws {
+  @Test
+  func `README Example - Different Hash Algorithms (lines 88-99)`() throws {
     // From README lines 88-99
     let secret = TOTP.generateSecret()
 
@@ -85,8 +84,8 @@ struct ReadmeVerificationTests {
     #expect(sha512TOTP.algorithm == .sha512)
   }
 
-  @Test("README Example - Provisioning URI (lines 101-113)")
-  func readmeExampleProvisioningURI() throws {
+  @Test
+  func `README Example - Provisioning URI (lines 101-113)`() throws {
     // From README lines 101-113
     let totp = try TOTP.sha1(base32Secret: "JBSWY3DPEHPK3PXP")
     let uri = totp.provisioningURI(
@@ -100,8 +99,8 @@ struct ReadmeVerificationTests {
     #expect(uri.contains("issuer=My%20App"))
   }
 
-  @Test("README Example - Time Window Validation (lines 115-129)")
-  func readmeExampleTimeWindowValidation() throws {
+  @Test
+  func `README Example - Time Window Validation (lines 115-129)`() throws {
     // From README lines 115-129
     let totp = try TOTP.sha1(base32Secret: "JBSWY3DPEHPK3PXP")
     let userInput = totp.generate()
@@ -118,8 +117,8 @@ struct ReadmeVerificationTests {
     #expect(validExact)
   }
 
-  @Test("README Example - Migration Support (lines 131-145)")
-  func readmeExampleMigrationSupport() throws {
+  @Test
+  func `README Example - Migration Support (lines 131-145)`() throws {
     // From README lines 131-145
     let totp = try TOTP.sha1(base32Secret: "JBSWY3DPEHPK3PXP")
 
@@ -140,19 +139,19 @@ struct ReadmeVerificationTests {
 
   // MARK: - HOTP Examples from README
 
-  @Test("README Example - Basic HOTP Generation (lines 149-169)")
-  func readmeExampleBasicHOTPGeneration() throws {
+  @Test
+  func `README Example - Basic HOTP Generation (lines 149-169)`() throws {
     // From README lines 149-169
     // Create HOTP with secret
-    let secret = "12345678901234567890".data(using: .ascii)!
+    let secret = Array("12345678901234567890".utf8)
     let hotp = try HOTP(secret: secret, digits: 6)
 
     // Generate OTP for counter value
-    let code = hotp.generate(counter: 1)
+    let code = hotp.generate(counter: 1, using: CryptoHMACProvider())
     #expect(code.count == 6)
 
     // Increment counter for next code
-    let nextCode = hotp.generate(counter: 2)
+    let nextCode = hotp.generate(counter: 2, using: CryptoHMACProvider())
     #expect(nextCode.count == 6)
     #expect(code != nextCode)
 
@@ -161,31 +160,31 @@ struct ReadmeVerificationTests {
     #expect(isValid)
   }
 
-  @Test("README Example - HOTP Different Algorithms (lines 171-184)")
-  func readmeExampleHOTPDifferentAlgorithms() throws {
+  @Test
+  func `README Example - HOTP Different Algorithms (lines 171-184)`() throws {
     // From README lines 171-184
-    let secret = "12345678901234567890".data(using: .ascii)!
+    let secret = Array("12345678901234567890".utf8)
 
     // SHA256 (more secure than SHA1)
     let hotp256 = try HOTP(secret: secret, digits: 6, algorithm: .sha256)
-    let code256 = hotp256.generate(counter: 1)
+    let code256 = hotp256.generate(counter: 1, using: CryptoHMACProvider())
     #expect(code256.count == 6)
 
     // SHA512 (maximum security)
     let hotp512 = try HOTP(secret: secret, digits: 8, algorithm: .sha512)
-    let code512 = hotp512.generate(counter: 1)
+    let code512 = hotp512.generate(counter: 1, using: CryptoHMACProvider())
     #expect(code512.count == 8)
 
     // From base32 secret
     let hotpBase32 = try HOTP(base32Secret: "JBSWY3DPEHPK3PXP", algorithm: .sha256)
-    let codeBase32 = hotpBase32.generate(counter: 1)
+    let codeBase32 = hotpBase32.generate(counter: 1, using: CryptoHMACProvider())
     #expect(codeBase32.count == 6)
   }
 
   // MARK: - Dependency Injection Example
 
-  @Test("README Example - Testing with Dependency Injection (lines 230-244)")
-  func readmeExampleDependencyInjection() throws {
+  @Test
+  func `README Example - Testing with Dependency Injection (lines 230-244)`() throws {
     // From README lines 230-244
     try withDependencies {
       $0.date = .constant(Date(timeIntervalSince1970: 1_234_567_890))
@@ -199,8 +198,8 @@ struct ReadmeVerificationTests {
 
   // MARK: - Installation Examples
 
-  @Test("README Example - Package Dependencies Compile Check")
-  func readmeExamplePackageDependenciesCompile() {
+  @Test
+  func `README Example - Package Dependencies Compile Check`() {
     // Verify the README package declaration compiles conceptually
     // This doesn't actually test Package.swift but verifies the described usage is correct
 
@@ -227,8 +226,8 @@ struct ReadmeVerificationTests {
 
   // MARK: - Verify All README Code Patterns Work
 
-  @Test("Verify README Pattern - SymmetricKey Integration")
-  func readmePatternSymmetricKey() throws {
+  @Test
+  func `Verify README Pattern - SymmetricKey Integration`() throws {
     // While not explicitly in README, this is implied by the API
     let key = SymmetricKey(size: .bits256)
     let totp = try TOTP(symmetricKey: key, algorithm: .sha256)
@@ -239,8 +238,8 @@ struct ReadmeVerificationTests {
     #expect(totp.validate(code))
   }
 
-  @Test("Verify README Pattern - Base32 Secret Property")
-  func readmePatternBase32Secret() throws {
+  @Test
+  func `Verify README Pattern - Base32 Secret Property`() throws {
     // Referenced in README line 84
     let originalSecret = "JBSWY3DPEHPK3PXP"
     let totp = try TOTP.sha1(base32Secret: originalSecret)
@@ -249,8 +248,8 @@ struct ReadmeVerificationTests {
     #expect(exportedSecret == originalSecret)
   }
 
-  @Test("Verify README Pattern - Time Remaining")
-  func readmePatternTimeRemaining() throws {
+  @Test
+  func `Verify README Pattern - Time Remaining`() throws {
     // Referenced in README line 69
     let totp = try TOTP.generateNew()
 

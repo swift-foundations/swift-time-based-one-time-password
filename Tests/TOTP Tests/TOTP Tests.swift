@@ -22,10 +22,10 @@ struct TOTPTests {
 
   // MARK: - RFC 6238 Test Vectors
 
-  @Test("RFC 6238 Test Vectors - SHA1")
-  func testRFC6238SHA1() throws {
+  @Test
+  func `RFC 6238 Test Vectors - SHA1`() throws {
     // Test vectors from RFC 6238 Appendix B
-    let secret = "12345678901234567890".data(using: .ascii)!
+    let secret = Array("12345678901234567890".utf8)
     let totp = try TOTP(secret: secret, digits: 8, algorithm: .sha1)
 
     struct TestVector {
@@ -51,10 +51,10 @@ struct TOTPTests {
     }
   }
 
-  @Test("RFC 6238 Test Vectors - SHA256")
-  func testRFC6238SHA256() throws {
+  @Test
+  func `RFC 6238 Test Vectors - SHA256`() throws {
     // Test vectors from RFC 6238 Appendix B
-    let secret = "12345678901234567890123456789012".data(using: .ascii)!
+    let secret = Array("12345678901234567890123456789012".utf8)
     let totp = try TOTP(secret: secret, digits: 8, algorithm: .sha256)
 
     struct TestVector {
@@ -80,12 +80,10 @@ struct TOTPTests {
     }
   }
 
-  @Test("RFC 6238 Test Vectors - SHA512")
-  func testRFC6238SHA512() throws {
+  @Test
+  func `RFC 6238 Test Vectors - SHA512`() throws {
     // Test vectors from RFC 6238 Appendix B
-    let secret = "1234567890123456789012345678901234567890123456789012345678901234".data(
-      using: .ascii
-    )!
+    let secret = Array("1234567890123456789012345678901234567890123456789012345678901234".utf8)
     let totp = try TOTP(secret: secret, digits: 8, algorithm: .sha512)
 
     struct TestVector {
@@ -113,8 +111,8 @@ struct TOTPTests {
 
   // MARK: - TOTP Generation and Validation
 
-  @Test("TOTP Generation and Validation")
-  func testTOTPGenerationAndValidation() throws {
+  @Test
+  func `TOTP Generation and Validation`() throws {
     let secret = TOTP.generateSecret()
     let totp = try TOTP.sha1(base32Secret: secret)
 
@@ -128,8 +126,8 @@ struct TOTPTests {
     #expect(!totp.validate("000000"), "Invalid OTP should not validate")
   }
 
-  @Test("TOTP Time Window")
-  func testTOTPTimeWindow() throws {
+  @Test
+  func `TOTP Time Window`() throws {
     let secret = "JBSWY3DPEHPK3PXP"
     let totp = try TOTP.sha1(base32Secret: secret)
 
@@ -150,17 +148,17 @@ struct TOTPTests {
 
   // MARK: - Secret Generation
 
-  @Test("Secret Generation")
-  func testSecretGeneration() {
+  @Test
+  func `Secret Generation`() {
     // Test default length
     let secret1 = TOTP.generateSecret()
-    let data1 = Data(base32Encoded: secret1)
+    let data1 = RFC_6238.Base32.decode(secret1)
     #expect(data1 != nil)
     #expect(data1?.count == 20, "Default secret should be 20 bytes")
 
     // Test custom length
     let secret2 = TOTP.generateSecret(length: 32)
-    let data2 = Data(base32Encoded: secret2)
+    let data2 = RFC_6238.Base32.decode(secret2)
     #expect(data2 != nil)
     #expect(data2?.count == 32, "Custom secret should be 32 bytes")
 
@@ -168,8 +166,8 @@ struct TOTPTests {
     #expect(secret1 != secret2, "Generated secrets should be unique")
   }
 
-  @Test("Secure Key Generation")
-  func testSecureKeyGeneration() throws {
+  @Test
+  func `Secure Key Generation`() throws {
     let totp = try TOTP.generateNew(algorithm: .sha256, digits: 6)
 
     #expect(totp.algorithm == .sha256)
@@ -183,8 +181,8 @@ struct TOTPTests {
 
   // MARK: - Factory Methods
 
-  @Test("Factory Methods")
-  func testFactoryMethods() throws {
+  @Test
+  func `Factory Methods`() throws {
     let secret = TOTP.generateSecret()
 
     // Test SHA1 factory
@@ -205,8 +203,8 @@ struct TOTPTests {
 
   // MARK: - Provisioning URI
 
-  @Test("Provisioning URI")
-  func testProvisioningURI() throws {
+  @Test
+  func `Provisioning URI`() throws {
     let secret = "JBSWY3DPEHPK3PXP"
     let totp = try TOTP.sha256(base32Secret: secret, digits: 8)
 
@@ -233,8 +231,8 @@ struct TOTPTests {
 
   // MARK: - Migration Support
 
-  @Test("Migration Parameters")
-  func testMigrationParameters() throws {
+  @Test
+  func `Migration Parameters`() throws {
     let originalSecret = TOTP.generateSecret()
     let originalTOTP = try TOTP.sha256(base32Secret: originalSecret, digits: 8)
 
@@ -259,8 +257,8 @@ struct TOTPTests {
 
   // MARK: - Time Remaining
 
-  @Test("Time Remaining")
-  func testTimeRemaining() throws {
+  @Test
+  func `Time Remaining`() throws {
     let totp = try TOTP.generateNew()
 
     let remaining = totp.timeRemaining()
@@ -275,8 +273,8 @@ struct TOTPTests {
 
   // MARK: - Current OTP Property
 
-  @Test("Current OTP Property")
-  func testCurrentOTPProperty() throws {
+  @Test
+  func `Current OTP Property`() throws {
     let totp = try TOTP.generateNew()
     let otp1 = totp.currentOTP
     let otp2 = totp.generate()
@@ -290,8 +288,8 @@ struct TOTPTests {
 
   // MARK: - Error Handling
 
-  @Test("Invalid Base32")
-  func testInvalidBase32() {
+  @Test
+  func `Invalid Base32`() {
     // Invalid characters
     #expect(throws: RFC_6238.Error.invalidBase32String) {
       _ = try TOTP(base32Secret: "INVALID!@#")
@@ -303,38 +301,38 @@ struct TOTPTests {
     }
   }
 
-  @Test("TOTP Initialization Errors")
-  func testTOTPInitializationErrors() {
+  @Test
+  func `TOTP Initialization Errors`() {
     // Test empty secret
     #expect(throws: RFC_6238.Error.emptySecret) {
-      _ = try TOTP(secret: Data(), digits: 6)
+      _ = try TOTP(secret: [UInt8](), digits: 6)
     }
 
     // Test invalid digits (too few)
     #expect(throws: RFC_6238.Error.self) {
-      _ = try TOTP(secret: Data(repeating: 0x42, count: 20), digits: 5)
+      _ = try TOTP(secret: [UInt8](repeating: 0x42, count: 20), digits: 5)
     }
 
     // Test invalid digits (too many)
     #expect(throws: RFC_6238.Error.self) {
-      _ = try TOTP(secret: Data(repeating: 0x42, count: 20), digits: 9)
+      _ = try TOTP(secret: [UInt8](repeating: 0x42, count: 20), digits: 9)
     }
 
     // Test invalid time step
     #expect(throws: RFC_6238.Error.self) {
-      _ = try TOTP(secret: Data(repeating: 0x42, count: 20), timeStep: 0)
+      _ = try TOTP(secret: [UInt8](repeating: 0x42, count: 20), timeStep: 0)
     }
 
     // Test negative time step
     #expect(throws: RFC_6238.Error.self) {
-      _ = try TOTP(secret: Data(repeating: 0x42, count: 20), timeStep: -30)
+      _ = try TOTP(secret: [UInt8](repeating: 0x42, count: 20), timeStep: -30)
     }
   }
 
   // MARK: - Symmetric Key Integration
 
-  @Test("Symmetric Key Integration")
-  func testSymmetricKeyIntegration() throws {
+  @Test
+  func `Symmetric Key Integration`() throws {
     let key = SymmetricKey(size: .bits256)
     let totp = try TOTP(symmetricKey: key, algorithm: .sha256)
 
@@ -348,8 +346,8 @@ struct TOTPTests {
 
   // MARK: - Base32 Properties
 
-  @Test("Base32 Secret Property")
-  func testBase32SecretProperty() throws {
+  @Test
+  func `Base32 Secret Property`() throws {
     let originalSecret = "JBSWY3DPEHPK3PXP"
     let totp = try TOTP.sha1(base32Secret: originalSecret)
 

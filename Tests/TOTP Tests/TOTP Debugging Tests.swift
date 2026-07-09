@@ -5,13 +5,12 @@ import TOTP
 import Testing
 
 @Suite(
-  "TOTP Debugging Tests",
   .dependency(\.date, .init { Date() })
 )
-struct TOTPDebuggingTests {
+struct `TOTP Debugging Tests` {
 
-  @Test("Verify Date and Unix Timestamp")
-  func verifyDateAndTimestamp() throws {
+  @Test
+  func `Verify Date and Unix Timestamp`() throws {
     // Check what Date() returns
     let now = Date()
     let timestamp = now.timeIntervalSince1970
@@ -40,8 +39,8 @@ struct TOTPDebuggingTests {
     #expect(abs(depTimestamp - timestamp) < 1.0, "Dependency date should match regular Date()")
   }
 
-  @Test("Test TOTP with Known Secret and Timestamp")
-  func testTOTPWithKnownValues() throws {
+  @Test
+  func `Test TOTP with Known Secret and Timestamp`() throws {
     // Use the exact secret and timestamp from your logs
     let secret = "KIWV65ISTT4U34ME"
     let testTimestamp: TimeInterval = 1_755_775_836  // 2025-08-21 11:30:36 UTC
@@ -98,15 +97,15 @@ struct TOTPDebuggingTests {
     }
   }
 
-  @Test("Test Base32 Encoding/Decoding")
-  func testBase32EncodingDecoding() throws {
+  @Test
+  func `Test Base32 Encoding/Decoding`() throws {
     let secret = "KIWV65ISTT4U34ME"
 
     print("=== Base32 Encoding Test ===")
     print("Original secret: \(secret)")
 
     // Decode the secret
-    guard let decodedData = Data(base32Encoded: secret) else {
+    guard let decodedData = RFC_6238.Base32.decode(secret) else {
       Issue.record("Failed to decode Base32 secret")
       return
     }
@@ -115,7 +114,7 @@ struct TOTPDebuggingTests {
     print("Decoded length: \(decodedData.count) bytes")
 
     // Re-encode and check if it matches
-    let reencoded = decodedData.base32EncodedString()
+    let reencoded = RFC_6238.Base32.encode(decodedData)
     print("Re-encoded: \(reencoded)")
 
     // Remove padding for comparison
@@ -134,7 +133,7 @@ struct TOTPDebuggingTests {
     ]
 
     for variant in variations {
-      if let variantData = Data(base32Encoded: variant) {
+      if let variantData = RFC_6238.Base32.decode(variant) {
         let variantHex = variantData.map { String(format: "%02x", $0) }.joined()
         print("\(variant): \(variantHex)")
 
@@ -149,8 +148,8 @@ struct TOTPDebuggingTests {
     }
   }
 
-  @Test("Compare TOTP Implementations")
-  func compareTOTPImplementations() throws {
+  @Test
+  func `Compare TOTP Implementations`() throws {
     let secret = "KIWV65ISTT4U34ME"
     let testDate = Date(timeIntervalSince1970: 1_755_775_836)
 
@@ -184,8 +183,8 @@ struct TOTPDebuggingTests {
     print("SHA1, 8 digits, 30s: \(eightDigitTOTP.generate(at: testDate))")
   }
 
-  @Test("Test with Dependency Date")
-  func testWithDependencyDate() throws {
+  @Test
+  func `Test with Dependency Date`() throws {
     @Dependency(\.date) var date
 
     let secret = "KIWV65ISTT4U34ME"
@@ -226,8 +225,8 @@ struct TOTPDebuggingTests {
     }
   }
 
-  @Test("Timezone Impact on TOTP")
-  func testTimezoneImpact() throws {
+  @Test
+  func `Timezone Impact on TOTP`() throws {
     let secret = "KIWV65ISTT4U34ME"
     let totp = try TOTP(base32Secret: secret)
 
@@ -266,8 +265,8 @@ struct TOTPDebuggingTests {
     }
   }
 
-  @Test("RFC 6238 Test Vectors")
-  func testRFC6238TestVectors() throws {
+  @Test
+  func `RFC 6238 Test Vectors`() throws {
     print("=== RFC 6238 Appendix B Test Vectors ===")
 
     // Test secret from RFC 6238: ASCII "12345678901234567890"
@@ -332,8 +331,8 @@ struct TOTPDebuggingTests {
     }
   }
 
-  @Test("Test with User's Failed Secret")
-  func testUserFailedSecret() throws {
+  @Test
+  func `Test with User's Failed Secret`() throws {
     print("=== Testing with User's Failed Secret ===")
 
     // Secret from user logs: P7NRHIDDIJUWSJKI
@@ -403,8 +402,8 @@ struct TOTPDebuggingTests {
     }
   }
 
-  @Test("Test Base32 Alphabet Issue")
-  func testBase32AlphabetIssue() throws {
+  @Test
+  func `Test Base32 Alphabet Issue`() throws {
     print("=== Testing Base32 Alphabet Issue ===")
 
     // The problematic secret from logs
@@ -425,7 +424,7 @@ struct TOTPDebuggingTests {
     }
 
     // Try decoding manually
-    if let data = Data(base32Encoded: secret) {
+    if let data = RFC_6238.Base32.decode(secret) {
       print("\nDecoded to \(data.count) bytes:")
       print("Hex: \(data.map { String(format: "%02x", $0) }.joined())")
 
@@ -454,7 +453,7 @@ struct TOTPDebuggingTests {
       print("\n=== Testing character substitutions ===")
       for variant in variants {
         print("Variant: \(variant)")
-        if let variantData = Data(base32Encoded: variant) {
+        if let variantData = RFC_6238.Base32.decode(variant) {
           let variantTOTP = try TOTP(
             secret: variantData,
             timeStep: 30,
