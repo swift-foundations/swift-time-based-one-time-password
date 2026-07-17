@@ -15,10 +15,10 @@ import Testing
 @testable import TOTP
 
 @Suite(
-  "TOTP Tests",
+
   .dependency(\.date, .init { Date() })
 )
-struct TOTPTests {
+struct Test {
 
   // MARK: - RFC 6238 Test Vectors
 

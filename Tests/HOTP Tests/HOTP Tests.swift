@@ -11,8 +11,8 @@ import Testing
 
 @testable import HOTP
 
-@Suite("HOTP Tests")
-struct HOTPTests {
+@Suite
+struct Test {
 
   @Test
   func `HOTP Generation - RFC 4226 Test Vectors`() throws {
