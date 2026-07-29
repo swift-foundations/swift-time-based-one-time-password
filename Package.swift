@@ -23,7 +23,7 @@ extension Target.Dependency {
 }
 
 let package = Package(
-    name: "swift-one-time-password",
+    name: "swift-time-based-one-time-password",
     platforms: [
         .macOS(.v26),
         .iOS(.v26)
