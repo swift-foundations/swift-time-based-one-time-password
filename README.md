@@ -27,7 +27,7 @@ Add this package to your Swift project:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/swift-foundations/swift-time-based-one-time-password.git", from: "0.0.1")
+    .package(url: "https://github.com/swift-foundations/swift-time-based-one-time-password.git", from: "0.1.0")
 ]
 ```
 
