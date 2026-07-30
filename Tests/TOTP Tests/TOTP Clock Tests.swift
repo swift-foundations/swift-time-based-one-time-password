@@ -97,7 +97,10 @@ struct `TOTP Clock Tests` {
       let totp = try TOTP(base32Secret: rfc6238SecretBase32, digits: 8, algorithm: .sha1)
       for vector in rfc6238SHA1Vectors {
         let code = totp.generate(at: Date(timeIntervalSince1970: vector.time))
-        #expect(code == vector.expected, "at \(vector.time) expected \(vector.expected), got \(code)")
+        #expect(
+          code == vector.expected,
+          "at \(vector.time) expected \(vector.expected), got \(code)"
+        )
       }
     }
 

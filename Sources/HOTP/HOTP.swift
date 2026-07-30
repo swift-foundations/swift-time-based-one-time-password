@@ -22,7 +22,11 @@ extension HOTP {
   ///   - digits: The number of digits in the OTP (default: 6)
   ///   - algorithm: The HMAC algorithm (default: SHA1)
   /// - Throws: `Error.invalidBase32String` if base32 decoding fails, or other validation errors
-  public init(base32Secret: String, digits: Int = 6, algorithm: RFC_6238.Algorithm = .sha1) throws {
+  public init(
+    base32Secret: String,
+    digits: Int = 6,
+    algorithm: RFC_6238.Algorithm = .sha1
+  ) throws(RFC_6238.Error) {
     guard let secret = RFC_6238.Base32.decode(base32Secret) else {
       throw RFC_6238.Error.invalidBase32String
     }

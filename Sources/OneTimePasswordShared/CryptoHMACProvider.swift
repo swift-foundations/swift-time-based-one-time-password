@@ -22,8 +22,10 @@ extension CryptoHMACProvider {
     switch algorithm {
     case .sha1:
       return Array(HMAC<Insecure.SHA1>.authenticationCode(for: data, using: symmetricKey))
+
     case .sha256:
       return Array(HMAC<SHA256>.authenticationCode(for: data, using: symmetricKey))
+
     case .sha512:
       return Array(HMAC<SHA512>.authenticationCode(for: data, using: symmetricKey))
     }

@@ -62,6 +62,7 @@ let package = Package(
             name: .totp.tests,
             dependencies: [
                 .totp,
+                .hotp,
                 .dependenciesTestSupport,
                 .crypto
             ]

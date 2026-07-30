@@ -141,8 +141,8 @@ struct Test {
     let timeInWindow = Date(timeIntervalSince1970: 1_234_567_890 + 30)  // One time step later
     #expect(totp.validate(otp, at: timeInWindow, window: 1))
 
-    // Should not validate outside window
-    let timeOutsideWindow = Date(timeIntervalSince1970: 1_234_567_890 + 90)  // Three time steps later
+    // Should not validate outside window: three time steps later
+    let timeOutsideWindow = Date(timeIntervalSince1970: 1_234_567_890 + 90)
     #expect(!totp.validate(otp, at: timeOutsideWindow, window: 1))
   }
 

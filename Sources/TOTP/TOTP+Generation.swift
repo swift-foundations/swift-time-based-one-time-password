@@ -17,7 +17,7 @@ extension TOTP {
   ///   - digits: Number of digits (default: 6)
   /// - Returns: TOTP instance
   /// - Throws: RFC_6238.Error if validation fails
-  public static func sha1(base32Secret: String, digits: Int = 6) throws -> TOTP {
+  public static func sha1(base32Secret: String, digits: Int = 6) throws(RFC_6238.Error) -> TOTP {
     try TOTP(base32Secret: base32Secret, digits: digits, algorithm: .sha1)
   }
 
@@ -27,7 +27,7 @@ extension TOTP {
   ///   - digits: Number of digits (default: 6)
   /// - Returns: TOTP instance
   /// - Throws: RFC_6238.Error if validation fails
-  public static func sha256(base32Secret: String, digits: Int = 6) throws -> TOTP {
+  public static func sha256(base32Secret: String, digits: Int = 6) throws(RFC_6238.Error) -> TOTP {
     try TOTP(base32Secret: base32Secret, digits: digits, algorithm: .sha256)
   }
 
@@ -37,7 +37,7 @@ extension TOTP {
   ///   - digits: Number of digits (default: 6)
   /// - Returns: TOTP instance
   /// - Throws: RFC_6238.Error if validation fails
-  public static func sha512(base32Secret: String, digits: Int = 6) throws -> TOTP {
+  public static func sha512(base32Secret: String, digits: Int = 6) throws(RFC_6238.Error) -> TOTP {
     try TOTP(base32Secret: base32Secret, digits: digits, algorithm: .sha512)
   }
 
@@ -60,14 +60,16 @@ extension TOTP {
     algorithm: RFC_6238.Algorithm = .sha1,
     digits: Int = 6,
     timeStep: TimeInterval = 30
-  ) throws -> TOTP {
+  ) throws(RFC_6238.Error) -> TOTP {
     // Recommended key lengths based on RFC 4226 and RFC 6238
     let keyLength: Int
     switch algorithm {
     case .sha1:
       keyLength = 20  // 160 bits
+
     case .sha256:
       keyLength = 32  // 256 bits
+
     case .sha512:
       keyLength = 64  // 512 bits
     }
@@ -95,7 +97,7 @@ extension TOTP {
     algorithm: RFC_6238.Algorithm = .sha1,
     digits: Int = 6,
     timeStep: TimeInterval = 30
-  ) throws {
+  ) throws(RFC_6238.Error) {
     let keyData = symmetricKey.withUnsafeBytes { Array($0) }
     try self.init(
       secret: keyData,

@@ -40,7 +40,7 @@ extension TOTP {
   /// - Parameter params: Migration parameters
   /// - Returns: TOTP instance
   /// - Throws: RFC_6238.Error if validation fails
-  public static func from(migration params: MigrationParameters) throws -> TOTP {
+  public static func from(migration params: MigrationParameters) throws(RFC_6238.Error) -> TOTP {
     try TOTP(
       base32Secret: params.secret,
       timeStep: TimeInterval(params.period),

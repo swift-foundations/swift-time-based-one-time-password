@@ -36,7 +36,10 @@ struct `RFC_6238.Base32 Tests` {
     func `RFC 4648 test vectors decode`() {
       for vector in rfc4648Vectors {
         let decoded = RFC_6238.Base32.decode(vector.base32)
-        #expect(decoded == Array(vector.ascii.utf8), "decode(\(vector.base32)) should be \(vector.ascii)")
+        #expect(
+          decoded == Array(vector.ascii.utf8),
+          "decode(\(vector.base32)) should be \(vector.ascii)"
+        )
       }
     }
 
@@ -62,7 +65,10 @@ struct `RFC_6238.Base32 Tests` {
         "JBSW-Y3DP-EHPK-3PXP",
       ]
       for variant in variants {
-        #expect(RFC_6238.Base32.decode(variant) == canonical, "\(variant) should decode like the canonical form")
+        #expect(
+          RFC_6238.Base32.decode(variant) == canonical,
+          "\(variant) should decode like the canonical form"
+        )
       }
     }
 
